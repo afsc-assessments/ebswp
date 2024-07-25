@@ -1,0 +1,11 @@
+pandoc: 3.2.1
+pkgdown: 2.1.0
+pkgdown_sha: ~
+articles:
+  Assessment-planning: Assessment-planning.html
+  Change_Model_Specs: Change_Model_Specs.html
+  Model-equations: Model-equations.html
+last_built: 2024-07-25T17:10Z
+urls:
+  reference: https://afsc-assessments.github.io/ebs_pollock/reference
+  article: https://afsc-assessments.github.io/ebs_pollock/articles
