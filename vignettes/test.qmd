@@ -1,0 +1,38 @@
+---
+title: "Mixing Table Types"
+format: pdf
+---
+
+# Section 1
+
+## LaTeX Table
+
+```{=latex}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+A & B \\
+\hline
+1 & 2 \\
+3 & 4 \\
+\hline
+\end{tabular}
+\caption{LaTeX Table}
+\label{table:latex}
+\end{table}
+
+
+With this setup, LaTeX-style references are used for the LaTeX table, and manual references are used for the Markdown table.
+xxxxxxv
+In this example, you can refer to the LaTeX table with "Refer to Table \ref{table:latex}" and to the Markdown table manually as "Refer to Table 2".
+
+
+
+| C | D |
+|---|---|
+| 5 | 6 |
+| 7 | 8 |
+
+Table: Markdown Table. This is the Markdown table caption.
+label:Markdown 
