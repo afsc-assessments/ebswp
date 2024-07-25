@@ -30,7 +30,7 @@ The repository can be cloned to your computer from the command line or using a u
 From the command line using Linux the repository can be cloned using:
 
 ``` r
-git clone https://github.com/afsc-assessments/ebswp
+git clone https://github.com/afsc-assessments/ebs_pollock
 ```
 
 ## Installation
@@ -42,7 +42,7 @@ There are several options for installing the `ebswp` R package.
 The `ebswp` package can be installed from within R using:
 
 ``` r
-devtools::install_github(repo = "afsc-assessments/ebswp", dependencies = TRUE, 
+devtools::install_github(repo = "afsc-assessments/ebs_pollock", dependencies = TRUE, 
                          build_vignettes = TRUE, auth_token = "your_PAT")
 ```
 
@@ -52,7 +52,7 @@ The GitHub repository can be cloned to your computer and the package installed f
 From Linux this would involve:
 
 ``` r
-git clone https://github.com/afsc-assessments/ebswp
+git clone https://github.com/afsc-assessments/ebs_pollock
 R CMD INSTALL ebswp
 ```
 
@@ -61,7 +61,7 @@ R CMD INSTALL ebswp
 This time from within R using:
 
 ``` r
-devtools::install("ebswp")
+devtools::install("ebs_pollock")
 ```
 
 ## Help
@@ -93,7 +93,7 @@ vignette(topic = "ebswp", package = "ebswp")
 
 ## Website
 
-All of the vignettes and the help pages for each function are bundled together and published on the website <https://afsc-assessments.github.io/ebswp/>.
+All of the vignettes and the help pages for each function are bundled together and published on the website <https://afsc-assessments.github.io/ebs_pollock/>.
 
 ## Developers
 
