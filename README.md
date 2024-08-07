@@ -7,6 +7,9 @@ The R package `ebswp` was developed for doing stock assessments of
 eastern Bering Sea walleye pollock for the AFSC. The stock assessment
 model was coded using the Autodif Model Builder (`ADMB`) software.
 
+*Note: the full commit history including the assessment can be found at
+[This repo used for the 2023 (and earlier) assessments](https://github.com/afsc-assessments/ebswp_2023) *
+
 ## Cloning the repository (optional)
 
 The R package `ebswp` lives on a private GitHub repository. The
