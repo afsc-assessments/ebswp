@@ -11,7 +11,7 @@ Note: the full commit history including the SAFE chapter can be found at
 [this repo used for the 2023 (and earlier) assessments](https://github.com/afsc-assessments/ebswp_2023) 
 For 2024 and future assessments, the library `ebswp` is used but the SAFE report 
 chapter and model runs are
-[here](https://github.com/afsc-assessments/ebswp_pollock_safe) 
+[here](https://github.com/afsc-assessments/ebs_pollock_safe) 
 
 ## Cloning this repository (optional)
 
