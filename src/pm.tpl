@@ -706,12 +706,17 @@ DATA_SECTION
    vector    adj_2(1,10)
    vector    SSB_1(1,10)
    vector    SSB_2(1,10)
-  int do_check  // Placeholder to have debug checker flag...
+  int do_check   // Placeholder to have debug checker flag...
+  int do_srrdevs // Flag to do deviations off the curve
  LOCAL_CALCS
   do_check=0;  
+  do_srrdevs=0;  
   if (ad_comm::argc > 1)
   {
     int on=0;
+    if ( (on=option_match(argc,argv,"-srrdevs"))>-1)
+      do_srrdevs = 1;
+
     if ( (on=option_match(ad_comm::argc,ad_comm::argv,"-condmsy"))>-1)
     {
       if (on>ad_comm::argc-2 | ad_comm::argv[on+1][0] == '-')
@@ -1710,6 +1715,7 @@ FUNCTION Get_Mortality_Rates
     Z(i) = F(i) + M(i); // Eq. 1
   }
   S=mfexp(-1.0*Z); // Eq. 1
+
 FUNCTION GetNumbersAtAge 
   //-This calculates the first year's numbers at age, estimated freely (no equil. assumptions)
   Get_Bzero();
@@ -1725,33 +1731,77 @@ FUNCTION GetNumbersAtAge
   {
     pred_rec_alpha = log(size_count(SST(styr-1,endyr_r-1))/sum(mfexp(resid_temp_x1*SST(styr-1,endyr_r-1)   + 
 		                 resid_temp_x2*elem_prod(SST(styr-1,endyr_r-1),SST(styr-1,endyr_r-1)))));
-    for (i=styr;i<=endyr_r;i++)
-    {
-      natage(i,1) = mfexp(log_avgrec+rec_epsilons(i)+pred_rec_alpha + resid_temp_x1*SST(i-1) + resid_temp_x2*SST(i-1)*SST(i-1)); // Eq. 1
-      pred_rec(i) = natage(i,1);
-    }
+      for (i=styr;i<=endyr_r;i++)
+      {
+        natage(i,1) = mfexp(log_avgrec+rec_epsilons(i)+pred_rec_alpha + resid_temp_x1*SST(i-1) + resid_temp_x2*SST(i-1)*SST(i-1)); // Eq. 1
+        pred_rec(i) = natage(i,1);
+      }
   }
   else
   {
-    for (i=styr;i<=endyr_r;i++)
-    {
-      natage(i,1) = mfexp(log_avgrec+rec_epsilons(i)); // Eq. 1
-      pred_rec(i) = natage(i,1); 
-    }  
+	  if (do_srrdevs)
+	  {
+      for (i=styr;i<endyr_r;i++)
+      {
+			// Substitute in the expectation from the SRR here
+			  if (i==styr) 
+				{
+          SSB(styr)   = elem_prod(elem_prod(natage(styr),pow(S(styr),yrfrac)),p_mature)*wt_ssb(styr); // Eq. 1
+          natage(i,1) = mfexp(log_avgrec+rec_epsilons(i)); // Eq. 1
+          natage(styr+1)(2,nages) = ++elem_prod(natage(styr)(1,nages-1), S(styr)(1,nages-1));   // Eq. 1
+          natage(styr+1,nages)   += natage(styr,nages)*S(styr,nages); // Eq. 1
+				}
+				else 
+				{
+          SSB(i)      = elem_prod(elem_prod(natage(i),pow(S(i),yrfrac)),p_mature)*wt_ssb(i); // Eq. 1
+          natage(i,1) = SRecruit(SSB(i-1)) * mfexp(rec_epsilons(i)); 
+          natage(i+1)(2,nages) = ++elem_prod(natage(i)(1,nages-1), S(i)(1,nages-1));   // Eq. 1
+          natage(i+1,nages)   += natage(i,nages)*S(i,nages); // Eq. 1
+        }  
+        natage(endyr_r,1) = SRecruit(SSB(endyr_r-1)) * mfexp(rec_epsilons(endyr_r)); 
+        SSB(endyr_r) = elem_prod(elem_prod(natage(endyr_r),pow(S(endyr_r),yrfrac)),p_mature)*wt_ssb(endyr_r); // Eq. 1
+        meannatage   = elem_prod(elem_div(1.-S,Z),natage);
+        pred_rec(i) = natage(endyr_r,1); 
+				if (do_check) cout << i <<" "<< pred_rec(i) <<" "<<SSB(i)<<" ";
+      }  
+			if (do_check) exit(1);
+	  }
+	  else
+	  {
+      for (i=styr;i<=endyr_r;i++)
+      {
+        natage(i,1) = mfexp(log_avgrec+rec_epsilons(i)); // Eq. 1
+        pred_rec(i) = natage(i,1); 
+      }  
+	  }
   }
   
-
-  // ***** start of thing by Paul  **********
-  // *****  for each year, for each predator and age of pollock preyed upon, distribute the predator and prey across the strata,
-  //           compute the predation in each strata with a functional response based on prey density, compute the consumption
-  //           in each strata, update the pollock numbers in each area, and combine to get the natage and SSB for the next year  
- 
-  int ii;   // ages of prey
-  int jj;   // number of predators 
-
-  // switch to estimate predation mort, otherwise revert back to standad equations
-  if(do_pred==1)
+  // switch if don't estimate predation mort standard equations), otherwise do estimation on mortality due to predation
+  if(do_pred!=1)
+  {
+		if (!do_srrdevs)
+		{
+      SSB(styr)               = elem_prod(elem_prod(natage(styr),pow(S(styr),yrfrac)),p_mature)*wt_ssb(styr); // Eq. 1
+      natage(styr+1)(2,nages) = ++elem_prod(natage(styr)(1,nages-1), S(styr)(1,nages-1));   // Eq. 1
+      natage(styr+1,nages)   += natage(styr,nages)*S(styr,nages); // Eq. 1
+      for (i=styr+1;i<endyr_r;i++)
+      {
+        SSB(i)               = elem_prod(elem_prod(natage(i),pow(S(i),yrfrac)),p_mature)*wt_ssb(i); // Eq. 1
+        natage(i+1)(2,nages) = ++elem_prod(natage(i)(1,nages-1), S(i)(1,nages-1));   // Eq. 1
+        natage(i+1,nages)   += natage(i,nages)*S(i,nages); // Eq. 1
+      }
+      SSB(endyr_r) = elem_prod(elem_prod(natage(endyr_r),pow(S(endyr_r),yrfrac)),p_mature)*wt_ssb(endyr_r); // Eq. 1
+      meannatage   = elem_prod(elem_div(1.-S,Z),natage);
+		}
+  }  // end else loop her
+  else  // do Paul's thing
   {                       
+    // ***** start of thing by Paul  **********
+    // *****  for each year, for each predator and age of pollock preyed upon, distribute the predator and prey across the strata,
+    //           compute the predation in each strata with a functional response based on prey density, compute the consumption
+    //           in each strata, update the pollock numbers in each area, and combine to get the natage and SSB for the next year  
+    int ii;   // ages of prey
+    int jj;   // number of predators 
     if(active(log_resid_M))   
       resid_M = mfexp(log_resid_M);
     else {
@@ -1896,20 +1946,7 @@ FUNCTION GetNumbersAtAge
       natmort_fut(i) = mean(M_pred_avg(i)(endyr_r-4,endyr_r) + resid_M(i));      
     }
   }   //   ********* end of thing by Paul  *******************
-  else 
-  {
-    SSB(styr)               = elem_prod(elem_prod(natage(styr),pow(S(styr),yrfrac)),p_mature)*wt_ssb(styr); // Eq. 1
-    natage(styr+1)(2,nages) = ++elem_prod(natage(styr)(1,nages-1), S(styr)(1,nages-1));   // Eq. 1
-    natage(styr+1,nages)   += natage(styr,nages)*S(styr,nages); // Eq. 1
-    for (i=styr+1;i<endyr_r;i++)
-    {
-      SSB(i)               = elem_prod(elem_prod(natage(i),pow(S(i),yrfrac)),p_mature)*wt_ssb(i); // Eq. 1
-      natage(i+1)(2,nages) = ++elem_prod(natage(i)(1,nages-1), S(i)(1,nages-1));   // Eq. 1
-      natage(i+1,nages)   += natage(i,nages)*S(i,nages); // Eq. 1
-    }
-    SSB(endyr_r) = elem_prod(elem_prod(natage(endyr_r),pow(S(endyr_r),yrfrac)),p_mature)*wt_ssb(endyr_r); // Eq. 1
-    meannatage   = elem_prod(elem_div(1.-S,Z),natage);
-  }  // end else loop
+
   //meanrec = mean(pred_rec(styr_est,endyr_r));
   meanrec = mean(pred_rec(1978,endyr_r));  // *****  changed by Paul to hard-wire mean rec to 1978 onwards 
 
@@ -3136,6 +3173,7 @@ FUNCTION dvariable get_avg_age(dvariable& Ftmp, dvariable& Stmp,dvariable& Rtmp,
   Rtmp   = Req;   
   RETURN_ARRAYS_DECREMENT();
   return avgage;
+
 FUNCTION dvariable SRecruit(const dvariable& Stmp)
   RETURN_ARRAYS_INCREMENT();
   dvariable RecTmp;
@@ -3156,6 +3194,7 @@ FUNCTION dvariable SRecruit(const dvariable& Stmp)
   }
   RETURN_ARRAYS_DECREMENT();
   return RecTmp;
+
 FUNCTION dvar_vector SRecruit(const dvar_vector& Stmp)
   RETURN_ARRAYS_INCREMENT();
   dvar_vector RecTmp(Stmp.indexmin(),Stmp.indexmax());
@@ -3256,8 +3295,14 @@ FUNCTION Recruitment_Likelihood
   else
   {
     sigmarsq_out    = norm2(log_rec_devs(styr_est,endyr_est))/size_count(log_rec_devs(styr_est,endyr_est));
+		// add in the srrdevs
     // SRR estimated for a specified window of years, with optional SST effect 
-    if (active(resid_temp_x1))    
+    if (!active(resid_temp_x1))    
+    {
+      for (i=styr_est;i<=endyr_est;i++)
+        srmod_rec(i) = SRecruit(SSB(i-1)); // 1 year lag w/ SSB
+    }  
+    else
     {
       srmod_rec_alpha = log(size_count(SST(styr_est-1,endyr_est-1))/sum(mfexp(resid_temp_x1*SST(styr_est-1,endyr_est-1)   + resid_temp_x2*elem_prod(SST(styr_est-1,endyr_est-1),SST(styr_est-1,endyr_est-1)))));
       for (i=styr_est;i<=endyr_est;i++)
@@ -3266,11 +3311,6 @@ FUNCTION Recruitment_Likelihood
         SR_resids_temp(i) = srmod_rec_alpha +  resid_temp_x1*SST(i-1) + resid_temp_x2*SST(i-1)*SST(i-1);  //***** added by Paul ******, log scale resids due to temp
       }
     }
-    else
-    {
-      for (i=styr_est;i<=endyr_est;i++)
-        srmod_rec(i) = SRecruit(SSB(i-1)); // 1 year lag w/ SSB
-    }  
     
     SR_resids = log(pred_rec(styr_est,endyr_est)+1.e-8) - log(srmod_rec + 1.e-8)  ;
    
@@ -3412,7 +3452,7 @@ FUNCTION Evaluate_Objective_Function
   }
   // Prior on log_Rzero          
 	// OjO, this to improve MCMC performance
-  if (active(log_Rzero))
+  if (active(log_Rzero) & !do_srrdevs)
     Priors(4) = 12.5*square( log_Rzero - 10.23 ); 
 
   // Beta prior on steepness....
@@ -3436,7 +3476,7 @@ FUNCTION Evaluate_Objective_Function
       {
         get_msy();
         // cout<<"SPR: "<<SPR_OFL<<endl; cout<<"Fmsy "<<Fmsy   <<endl; 
-        Priors(1) = lambda_spr_msy*square(log(MSY)-log(condmsy));
+        Priors(1) = 100.*lambda_spr_msy*square(log(MSY)-log(condmsy));
          // MSY      = get_yield(Fmsy,Stmp,Rtmp,Btmp);
       }
     }
