@@ -80,14 +80,13 @@ plot_srr <- function(M, ylab = "Recruits (age 1, millions)", xlab = "Female spaw
 
     p <- ggplot(mdf) + labs(x = xlab, y = ylab)
 
-    if (!is.null(xlim))
-        p <- p + xlim(xlim)
+    #if (!is.null(xlim)) p <- p + xlim(xlim)
 
     if (is.null(ylim))
     {
         p <- p + expand_limits(y = 0)
     } else {
-        p <- p + ylim(ylim[1], ylim[2])
+        p <- p + coord_cartesian(ylim=ylim,xlim=xlim )
     }
 
     if (length(M) == 1)
