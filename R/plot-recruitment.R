@@ -37,7 +37,7 @@
 plot_recruitment <- function(M, xlab = "Year",
                              ylab = "Recruitment (millions)",
                              xlim = c(1990.5, 2023.5),
-                             fatten = 1.5,
+                             fatten = .8,
                              fill = "yellow",
                              alpha = .9) {
   xlab <- paste0("\n", xlab)
