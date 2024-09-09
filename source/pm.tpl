@@ -364,7 +364,7 @@ DATA_SECTION
   init_ivector yrs_bts_data(1,n_bts)
   init_ivector yrs_ats_data(1,n_ats)
   !! write_log(ngears);write_log(minind);  write_log(n_bts); write_log(yrs_fsh_data);write_log(yrs_bts_data);write_log(yrs_ats_data);
-  init_ivector      sam_fsh(1,n_fsh)
+  init_vector      sam_fsh(1,n_fsh)
   init_ivector      sam_bts(1,n_bts)
   init_ivector      sam_ats(1,n_ats)
   init_ivector      err_fsh(1,n_fsh)
@@ -2654,6 +2654,7 @@ FUNCTION dvariable spr_ratio(dvariable trial_F,dvar_vector& sel)
   SBtmp  += Ntmp(nages)*p_mature(nages)*wttmp(nages)*pow(srvtmp(nages),yrfrac);
   RETURN_ARRAYS_DECREMENT();
   return(SBtmp/phizero);
+
 FUNCTION dvariable get_spr_rates(double spr_percent)
   RETURN_ARRAYS_INCREMENT();
   double df=1.e-3;
@@ -3938,6 +3939,23 @@ FUNCTION dvariable robust_p(dmatrix& obs,dvar_matrix& pred,const dvariable& a, c
       v(i) = a  + 2. * elem_prod(obs(i)(amin,amax) ,1.  - obs(i)(amin,amax));
       dvar_vector l  =  elem_div(square(pred(i)(amin,amax) - obs(i)(amin,amax)), v(i));
       log_likelihood -=  sum(log(mfexp(-1.* double(b(i)) * l) + .01));  
+    }
+    log_likelihood  += 0.5 * sum(log(v));
+    RETURN_ARRAYS_DECREMENT(); // Need this to decrement the stack increment
+    return(log_likelihood);
+
+FUNCTION dvariable robust_p(const dmatrix& obs,const dvar_matrix& pred,const dvariable& a, const data_vector& b)
+    RETURN_ARRAYS_INCREMENT(); //Need this statement because the function returns a variable type
+    if (obs.indexmin() != pred.indexmin() || obs.indexmax() != pred.indexmax() )
+      cerr << "Index limits on observed vector are not equal to the Index\n"
+        "limits on the predicted vector in robust_p function\n";
+    // dvar_matrix v = a  + 2. * elem_prod(pred ,1.  - pred );
+    dvar_matrix v = a  + 2. * elem_prod(obs ,1.  - obs );
+    dvar_matrix l  =  elem_div(square(pred - obs), v);
+    dvariable log_likelihood = 0.;
+    for (i=obs.indexmin();i<= obs.indexmax() ;i++) 
+    {
+      log_likelihood -=  sum(log(mfexp(-1.* double(b(i)) * l(i)) + .01));  
     }
     log_likelihood  += 0.5 * sum(log(v));
     RETURN_ARRAYS_DECREMENT(); // Need this to decrement the stack increment
@@ -5617,6 +5635,28 @@ FUNCTION write_R
 
   dvariable ABC  = gm_b1(1)*hm_f*adj_1(1); 
   dvariable OFL  = gm_b1(1)*am_f*adj_1(1); 
+	dvar_vector Ftmp(1,nages);
+	dvar_vector Stmp(1,nages);
+	dvar_vector Ztmp(1,nages);
+	dvar_vector Ntmp1(1,nages);
+	dvar_vector Ntmp2(1,nages);
+	dvar_vector catagetmp(1,nages);
+	dvariable T3_ABC;
+
+  Ztmp = F40*sel_fut + natmort; 
+  Stmp = mfexp(-(Ztmp)) ;
+  // Ntmp1(2,nages) = ++elem_prod(natage(endyr_r)(1,nages-1), S(endyr_r)(1,nages-1));  
+  // Ntmp1(nages)  += natage(endyr_r,nages)*S(endyr_r,nages);
+  // Ntmp1(1)       = meanrec;
+	Ntmp1 = natage_future(1,styr_fut); 
+  catagetmp  = elem_prod( elem_prod(Ntmp1 , F40 *sel_fut ) , elem_div( (1. - Stmp) , Ztmp ));
+  T3_ABC     = catagetmp*wt_fut;
+
+  //trying to compute tier 3 ABC
+    // Loop over range of future catch levels
+    // Ftmp = SolveF2(Ntmp, Cat_Fut(1));
+    // Stmp = mfexp(-(Ftmp*sel_fut + natmort));
+    // Ntmp2(2,nages) = ++elem_prod(Ntmp(1,nages-1), Stmp(1,nages-1));  
   report <<"T1"<<endl; //  yr ABC OFL SSB 3+Biom CatchFut harmeanF arithmeanF geomB SPRABC SPROFL Tier2 Tier1.5 AdjFABC AdjFOFL Adj Fmsyr
   report << 
     endyr_r+1<<" " << 
@@ -5636,9 +5676,23 @@ FUNCTION write_R
     am_f * adj_1(1) << " " << 
     adj_1(1) << " " << 
     am_f << " " << 
+    T3_ABC <<" "<<
     endl;
   ABC  = gm_b2(1)*hm_f*adj_2(1); 
   OFL  = gm_b2(1)*am_f*adj_2(1); 
+
+  Ntmp2(2,nages) = ++elem_prod(Ntmp1(1,nages-1), Stmp(1,nages-1));  
+  Ntmp2(nages)  += Ntmp1(nages)*Stmp(nages);
+  Ntmp2(1)       = meanrec;
+  catagetmp  = elem_prod( elem_prod(Ntmp2 , F40 *sel_fut ) , elem_div( (1. - Stmp) , Ztmp ));
+  T3_ABC = catagetmp*wt_fut;
+	cout <<"T3 calc N"<<endl;
+	cout <<Ntmp1<<endl;
+	cout <<Ntmp2<<endl;
+	cout <<Ztmp <<endl;
+	cout <<Stmp <<endl;
+
+
   report << 
     endyr_r+2<<" " << 
     ABC <<" " << 
@@ -5657,6 +5711,7 @@ FUNCTION write_R
     am_f * adj_2(1) << " " << 
     adj_1(2) << " " << 
     am_f << " " << 
+    T3_ABC <<" "<<
     endl;
 
 
