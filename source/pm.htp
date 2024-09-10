@@ -1,7 +1,9 @@
-#if !defined(_PM_)
-#  define _PM_
+#if !defined(_pm_)
+#  define _pm_
 
 class model_data : public ad_comm{
+  int mcmcmode;
+  int Mmatrix;
   int count_Ffail;
   int count_mcmc;
   int count_mcsave;
@@ -233,6 +235,7 @@ class model_data : public ad_comm{
   dvector SSB_2;
   int do_check;
   int do_srrdevs;
+  dmatrix M_in;
   int phase_cpue_q;
   int phase_avo_q;
   random_number_generator *   pad_rng;
@@ -269,6 +272,7 @@ class model_data : public ad_comm{
   dvector FW_fsh;
   double FW_bts;
   double FW_ats;
+  int endyr_temp;
   data_vector SST;
   double SST_fut;
   data_number n_pred_grp_nonpoll;
@@ -400,7 +404,7 @@ private:
   param_number alpha;
   param_number beta;
   param_number Rzero;
-  param_likeprof_number q_all;
+  param_stddev_number q_all;
   param_number repl_F;
   param_number repl_yld;
   param_number repl_SSB;

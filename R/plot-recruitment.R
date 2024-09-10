@@ -53,7 +53,8 @@ plot_recruitment <- function(M, xlab = "Year",
       scale_x_continuous(limits = xlim, breaks = seq(round(xlim[1], 0), round(xlim[2], 0), by = 5)) +
       #            geom_bar(stat = "identity", alpha = alpha, aes(fill = Model), limits=xlim, position = "dodge") + #Carey commented this out and added the line below
       geom_bar(stat = "identity", alpha = alpha, aes(fill = Model), position = "dodge") +
-      geom_pointrange(aes(year, rec, ymax = ub, ymin = lb), col = "grey", size = .6, position = position_dodge(width = 0.9))
+      geom_pointrange(aes(year, rec, ymax = ub, ymin = lb), col = "grey", fatten=fatten, 
+                      size = .6, position = position_dodge(width = 0.9))
   }
   p <- p + labs(x = xlab, y = ylab) + .THEME
   if (!.OVERLAY) p <- p + facet_wrap(~Model)
