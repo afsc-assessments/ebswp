@@ -13,6 +13,7 @@
 #' proj_file_path <- "path/to/proj.csv"
 #' tier3_results <- get_tier3_res(proj_file_path)
 #' }
+#proj_file = "~/_mymods/afsc-assessments/ebs_pollock_safe/2024/runs/m23/proj/spm."
 get_tier3_res <- function(proj_file) {
   X<-list()
   X$bfs        <- read_csv(proj_file,show_col_types = FALSE) # |> mutate(Alt=Alt) #Carey commented this out b.c. Alt undefined and also filter for Alt = 2 below.
@@ -21,8 +22,8 @@ get_tier3_res <- function(proj_file) {
   X$Tier3_OFL1 <- X$bfs %>% filter(Alt==2,Year==nextyr)   %>% summarize(round(mean(OFL),0))
   X$Tier3_OFL1s<- format(round(1e3*X$Tier3_OFL1,-3),big.mark=",",scientific=F,digits=1)
   X$Tier3_SSB1 <- X$bfs %>% filter(Alt==2,Year==nextyr)   %>% summarize(round(mean(SSB),0))
-  X$Tier3_fabc1<- X$Tier3_ABC1 / X$ABC_biom1
-  X$Tier3_fofl1<- X$Tier3_OFL1 / X$ABC_biom1
+  #X$Tier3_fabc1<- X$Tier3_ABC1 / X$ABC_biom1
+  #X$Tier3_fofl1<- X$Tier3_OFL1 / X$ABC_biom1
   X$Tier3_ABC2 <- X$bfs %>% filter(Alt==2,Year==1+nextyr) %>% summarize(round(mean(ABC),0))
   X$Tier3_ABC2s<- format(round(1e3*X$Tier3_ABC2,-3),big.mark=",",scientific=F,digits=1)
   X$Tier3_OFL2 <- X$bfs %>% filter(Alt==2,Year==1+nextyr) %>% summarize(round(mean(OFL),0))

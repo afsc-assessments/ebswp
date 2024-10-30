@@ -124,8 +124,10 @@ get_vars <- function(M, proj_file = NULL) {
 	B$ofl2s      <-  format(round(1e3*pdf$OFL[2],-3),big.mark=",",scientific=F,digits=1)
 	#B$bfs        <- read.csv("../doc/data/proj.csv",header=T)
   B <- c(B,get_tier3_res(proj_file))
-	#B$abc1       <- 0.85*B$maxabc1 #B$Tier3_ABC1
-	#B$abc2       <- 0.85*B$maxabc2 #B$Tier3_ABC2
+	B$Tier3_fabc1       <- B$Tier3_ABC1 / B$ABC_biom1
+	B$Tier3_fabc2       <- B$Tier3_ABC2 / B$ABC_biom2
+	B$Tier3_fofl1       <- B$Tier3_OFL1 / B$ABC_biom1
+	B$Tier3_fofl2       <- B$Tier3_OFL2 / B$ABC_biom2
 	# Mean F
 	if (dim(M$future_catch)[1]>8) {
 		B$abc1constF <- M$future_catch[12,1]
@@ -138,6 +140,8 @@ get_vars <- function(M, proj_file = NULL) {
 	# Set recommended ABC here--Tier 3
 	B$abc1       <- (B$Tier3_ABC1)
 	B$abc2       <- (B$Tier3_ABC2)
+	B$Tier3_Fabc1       <- (B$Tier3_fabc1)
+	B$Tier3_Fabc2       <- (B$Tier3_fabc2)
 	#B$abc1       <- (B$Tier2_ABC1)
 	#B$abc2       <- (B$Tier2_ABC2)
 
