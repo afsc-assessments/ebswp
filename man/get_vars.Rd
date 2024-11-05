@@ -4,7 +4,7 @@
 \alias{get_vars}
 \title{Extract and Compute Several Metrics from Model Output}
 \usage{
-get_vars(M, proj_file = NULL)
+get_vars(M, proj_file = NULL, ord = dec_tab_ord)
 }
 \arguments{
 \item{M}{A list or data structure that holds the model output/results. Expected to have several
@@ -12,6 +12,9 @@ named elements, including \code{fit}, \code{R}, \code{SSB}, etc.}
 
 \item{proj_file}{(Optional) A file path to a projection file for Tier 3 results.
 Default is NULL.}
+
+\item{ord}{The order and extent of reporting for the decision table aspect
+Default is dec_tab_ord.}
 }
 \value{
 A list \code{B} that contains various extracted and computed metrics.

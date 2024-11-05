@@ -6,6 +6,8 @@
 \alias{ebswp-package}
 \title{ebswp: Facilitates Model Running for EBS Pollock}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Facilitates Model Running for EBS Pollock
 }
 \seealso{

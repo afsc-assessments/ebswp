@@ -14,6 +14,7 @@
 #' @return A list `B` that contains various extracted and computed metrics.
 #'
 #' @importFrom utils read.table
+#' @export 
 #'
 #' @examples
 #' \dontrun{

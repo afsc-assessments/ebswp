@@ -7,8 +7,9 @@
 plot_recruitment(
   M,
   xlab = "Year",
-  ylab = "Recruitment (millions of individuals)",
-  xlim = c(1990.5, 2019.5),
+  ylab = "Recruitment (millions)",
+  xlim = c(1990.5, 2023.5),
+  fatten = 0.8,
   fill = "yellow",
   alpha = 0.9
 )
