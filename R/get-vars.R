@@ -8,6 +8,9 @@
 #' @param proj_file (Optional) A file path to a projection file for Tier 3 results.
 #'        Default is NULL.
 #'
+#' @param ord The order and extent of reporting for the decision table aspect
+#'        Default is dec_tab_ord.
+#'
 #' @return A list `B` that contains various extracted and computed metrics.
 #'
 #' @importFrom utils read.table
@@ -17,7 +20,7 @@
 #' model_result <- list(...) # Example model result here
 #' metrics <- get_vars(model_result)
 #' }
-get_vars <- function(M, proj_file = NULL) {
+get_vars <- function(M, proj_file = NULL, ord=dec_tab_ord) {
   # ... [rest of your function code here]
   B <- list()
   A <- read.table("doc/data/intro_table.dat",header = TRUE)
@@ -155,8 +158,9 @@ get_vars <- function(M, proj_file = NULL) {
 	B$fabc1s     <- B$Tier2_ABC1 /B$ABC_biom1
 
 	# Decision table stuff
-	ord <- c(8,2:3,1,4:7)
+	#ord <- c(8,2:3,1,4:7)
   B$catch_dec_tab <- M$dec_tab_catch[ord]
+  B$pfcur_f35     <- 1- pnorm(1,M$Fcur_F35[ord] ,    M$Fcur_F35.sd[ord]  )
   B$pfcur_fmsy    <- 1- pnorm(1,M$Fcur_Fmsy[ord] ,    M$Fcur_Fmsy.sd[ord]  )
   B$pbcur_bmsy    <- pnorm(1, M$Bcur_Bmsy[ord]   ,  M$Bcur_Bmsy.sd[ord]   )
   B$pbcur_bmean   <- pnorm(1, M$Bcur_Bmean[ord]  ,  M$Bcur_Bmean.sd[ord] )
