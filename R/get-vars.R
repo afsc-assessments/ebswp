@@ -128,6 +128,11 @@ get_vars <- function(M, proj_file = NULL, ord=dec_tab_ord) {
 	B$ofl2s      <-  format(round(1e3*pdf$OFL[2],-3),big.mark=",",scientific=F,digits=1)
 	#B$bfs        <- read.csv("../doc/data/proj.csv",header=T)
   B <- c(B,get_tier3_res(proj_file))
+	B$Tier2_fabc1       <- B$Tier2_ABC1 / B$ABC_biom1
+	B$Tier2_fabc2       <- B$Tier2_ABC2 / B$ABC_biom2
+	B$Tier2_fofl1       <- B$Tier2_OFL1 / B$ABC_biom1
+	B$Tier2_fofl2       <- B$Tier2_OFL2 / B$ABC_biom2
+	
 	B$Tier3_fabc1       <- B$Tier3_ABC1 / B$ABC_biom1
 	B$Tier3_fabc2       <- B$Tier3_ABC2 / B$ABC_biom2
 	B$Tier3_fofl1       <- B$Tier3_OFL1 / B$ABC_biom1
@@ -161,8 +166,8 @@ get_vars <- function(M, proj_file = NULL, ord=dec_tab_ord) {
 	# Decision table stuff
 	#ord <- c(8,2:3,1,4:7)
   B$catch_dec_tab <- M$dec_tab_catch[ord]
-  B$pfcur_f35     <- 1- pnorm(1,M$Fcur_F35[ord] ,    M$Fcur_F35.sd[ord]  )
-  B$pfcur_fmsy    <- 1- pnorm(1,M$Fcur_Fmsy[ord] ,    M$Fcur_Fmsy.sd[ord]  )
+  B$pfcur_f35     <- 1- pnorm(1,M$Fcur_F35[ord]  ,  M$Fcur_F35.sd[ord]  )
+  B$pfcur_fmsy    <- 1- pnorm(1,M$Fcur_Fmsy[ord] ,  M$Fcur_Fmsy.sd[ord]  )
   B$pbcur_bmsy    <- pnorm(1, M$Bcur_Bmsy[ord]   ,  M$Bcur_Bmsy.sd[ord]   )
   B$pbcur_bmean   <- pnorm(1, M$Bcur_Bmean[ord]  ,  M$Bcur_Bmean.sd[ord] )
   B$pbcur2_bmsy   <- pnorm(1, M$Bcur2_Bmsy[ord]  ,  M$Bcur2_Bmsy.sd[ord]  )
