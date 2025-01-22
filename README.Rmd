@@ -95,11 +95,6 @@ vignette(topic = "ebswp", package = "ebswp")
 
 All of the vignettes and the help pages for each function are bundled together and published on the website <https://afsc-assessments.github.io/ebswp/>.
 
-## Developers
-
-Developers will want to do things slightly differently.
-See the `Model development` vignette.
-
 # Acronymns
 
 NOAA: National Oceanic and Atmospheric Administration\
