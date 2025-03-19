@@ -14,12 +14,12 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Facilitates Model Running for EBS Pollock">
 <meta name="description" content="Facilitates Model Running for EBS Pollock">
 <meta property="og:description" content="Facilitates Model Running for EBS Pollock">
-<meta property="og:image" content="https://afsc-assessments.github.io/ebs_pollock/logo.png">
+<meta property="og:image" content="https://afsc-assessments.github.io/ebswp/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ebswp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.0000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,11 +65,12 @@
 </h1>
 </div>
 <p>The R package <code>ebswp</code> was developed for doing stock assessments of eastern Bering Sea walleye pollock for the AFSC. The stock assessment model was coded using the Autodif Model Builder (<code>ADMB</code>) software.</p>
+<p>Note: the full commit history including the SAFE chapter can be found at <a href="https://github.com/afsc-assessments/ebswp_2023" class="external-link">this repo used for the 2023 (and earlier) assessments</a> For 2024 and future assessments, the library <code>ebswp</code> is used but the SAFE report chapter and model runs are <a href="https://github.com/afsc-assessments/ebs_pollock_safe" class="external-link">here</a></p>
 <div class="section level2">
-<h2 id="cloning-the-repository-optional">Cloning the repository (optional)<a class="anchor" aria-label="anchor" href="#cloning-the-repository-optional"></a>
+<h2 id="cloning-this-repository-optional">Cloning this repository (optional)<a class="anchor" aria-label="anchor" href="#cloning-this-repository-optional"></a>
 </h2>
 <p>The R package <code>ebswp</code> lives on a private GitHub repository. The repository can be cloned to your computer from the command line or using a user interface. From the command line using Linux the repository can be cloned using:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>afsc<span class="sc">-</span>assessments<span class="sc">/</span>ebs_pollock</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>afsc<span class="sc">-</span>assessments<span class="sc">/</span>ebswp</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -80,14 +81,14 @@
 </h3>
 <p>The <code>ebswp</code> package can be installed from within R using:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"afsc-assessments/ebs_pollock"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"afsc-assessments/ebswp"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                         build_vignettes <span class="op">=</span> <span class="cn">TRUE</span>, auth_token <span class="op">=</span> <span class="st">"your_PAT"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="option-2">Option 2<a class="anchor" aria-label="anchor" href="#option-2"></a>
 </h3>
 <p>The GitHub repository can be cloned to your computer and the package installed from the command line. From Linux this would involve:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>afsc<span class="sc">-</span>assessments<span class="sc">/</span>ebs_pollock</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>afsc<span class="sc">-</span>assessments<span class="sc">/</span>ebswp</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>R CMD INSTALL ebswp</span></code></pre></div>
 </div>
 <div class="section level3">
@@ -95,7 +96,7 @@
 </h3>
 <p>This time from within R using:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"ebs_pollock"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"ebswp"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -121,7 +122,7 @@
 <div class="section level2">
 <h2 id="website">Website<a class="anchor" aria-label="anchor" href="#website"></a>
 </h2>
-<p>All of the vignettes and the help pages for each function are bundled together and published on the website <a href="https://afsc-assessments.github.io/ebs_pollock/" class="uri">https://afsc-assessments.github.io/ebs_pollock/</a>.</p>
+<p>All of the vignettes and the help pages for each function are bundled together and published on the website <a href="https://afsc-assessments.github.io/ebswp/" class="uri">https://afsc-assessments.github.io/ebswp/</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="developers">Developers<a class="anchor" aria-label="anchor" href="#developers"></a>
@@ -183,7 +184,7 @@ REFM: Resource and Ecology and Fisheries Management</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
