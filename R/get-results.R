@@ -8,18 +8,15 @@
 #' @return A list containing model results.
 #' @export
 get_results <- function(mod_names.=mod_names, rundir="runs",moddir=mod_dir,run_on_mac=TRUE) {
- if (run_on_mac) {
-  fn        <- paste0(rundir,"/",moddir,"/pm")
- } else {
-   #run on windows
-   fn <- paste0(rundir,"\\",moddir,"\\pm") #rundir is "C:\\GitProjects\\EBSpollock\\2023_runs\\"
- }
+ 
+  fn<- paste0(rundir,"/",moddir,"/pm")
   nmods <- length(mod_names.)
   num_cores <- parallel::detectCores() - 1
   cl <- parallel::makeCluster(num_cores)
   on.exit(parallel::stopCluster(cl))  # Ensure the cluster stops after function execution
 
   # Export necessary functions and objects to the cluster
+  read_fit(paste0(rundir,"/",mod_dir[1],"/pm"))
   parallel::clusterExport(cl, c("read_fit", "read_admb", "read_rep"), envir=environment())
 
   # Fetch model results in parallel
