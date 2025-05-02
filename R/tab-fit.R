@@ -38,7 +38,7 @@ tab_fit <- function(M, mod_scen=NULL){
     dat_like  <- round(x$dat_like-x$wt_like   ,2); names(dat_like) <- paste0("Data NLL")
     tot_like  <- round(x$tot_like-x$wt_like   ,2); names(tot_like) <- paste0("Total NLL")
     v      <- c( rmse_bts, rmse_ats, rmse_avo, rmse_cpue, sdnr_bts, sdnr_ats, sdnr_avo,
-                 effn_fsh, effn_bts, effn_ats, cat_like,bts_like, ats_like, avo_like,
+                 effn_fsh, effn_bts, effn_ats, cat_like,bts_like, ats_like, at1_like, avo_like,
                  fac_like, bac_like, aac_like,sel_like,pri_like,dat_like,tot_like)
     df     <- cbind(df, v)
   }
