@@ -42,7 +42,7 @@
 #' @export
 #'
 #' @return A ggplot object with the plotted data.
-plot_avo <- function(M, xlab = "Year", ylab = "Acoustic return (Sa from AVO) ", ylim = NULL)
+plot_avo <- function(M, xlab = "Year", ylab = "Acoustic return (Sa from AVO) ", ylim = NULL,error_bars = TRUE)
 {
   xlab <- paste0("\n", xlab)
   ylab <- paste0(ylab, "\n")
@@ -57,14 +57,18 @@ plot_avo <- function(M, xlab = "Year", ylab = "Acoustic return (Sa from AVO) ", 
 
   if (length(M) == 1) {
     p <- p + geom_line(aes(x = year, y = pre)) +
-						geom_point(aes(x=year, y=obs)) + 
-      geom_errorbar(aes(x = year, ymax = ub, ymin = lb),width=0.5)
+						geom_point(aes(x=year, y=obs))
+      if (error_bars == TRUE) {
+        p<-p + geom_errorbar(aes(x = year, ymax = ub, ymin = lb),width=0.5)
+      }
     } else {
     dw <- 0.5
     p <- p + geom_line(aes(x = year, y = pre, colour = Model), width=1) + geom_point(aes(x=year, y=obs),size=2) + 
-      geom_point(aes(x = year, y = obs, col = Model, fill = Model), position = position_dodge(width = dw)) +
-      geom_pointrange(aes(year, obs, ymax = ub, ymin = lb, color = Model, fill = Model), shape = 1, linetype = "solid", position = position_dodge(width = dw))
+      geom_point(aes(x = year, y = obs, col = Model, fill = Model), position = position_dodge(width = dw))
+      if (error_bars == TRUE) {
+      p<-p + geom_pointrange(aes(year, obs, ymax = ub, ymin = lb, color = Model, fill = Model), shape = 1, linetype = "solid", position = position_dodge(width = dw))
             #geom_errorbar(aes(x = year, ymax = ub, ymin = lb),width=0.5)
+      }
     }
     p <- p +scale_x_continuous(limits=c(2005,2022),breaks=seq(2006,2023,2)) 
     return(p + .THEME)

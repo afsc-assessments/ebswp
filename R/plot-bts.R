@@ -54,7 +54,8 @@ plot_bts <- function(M,
                      xlim = NULL,
                      ylim = NULL,
                      color = "purple",
-                     biomass = TRUE) {
+                     biomass = TRUE,
+                     error_bars = TRUE) {
 
   mdf <- .get_bts_df(M, biomass = biomass)
 
@@ -69,13 +70,17 @@ plot_bts <- function(M,
 
   if (length(M) == 1) {
     p <- p + geom_line(aes(x = year, y = pre)) +
-      geom_point(aes(x = year, y = obs), size = 2, color = color) +
-      geom_errorbar(aes(x = year, ymax = ub, ymin = lb), width = 0.5)
+      geom_point(aes(x = year, y = obs), size = 2, color = color)
+    if (error_bars==TRUE) {
+     p<- p + geom_errorbar(aes(x = year, ymax = ub, ymin = lb), width = 0.5)
+    }
   } else {
     dw <- 0.5
     p <- p + geom_line(aes(x = year, y = pre, col = Model), width = 1, position = position_dodge(width = dw)) +
-      geom_point(aes(x = year, y = obs, col = Model, fill = Model), position = position_dodge(width = dw)) +
-      geom_pointrange(aes(year, obs, ymax = ub, ymin = lb, color = Model, fill = Model), shape = 1, linetype = "solid", position = position_dodge(width = dw))
+      geom_point(aes(x = year, y = obs, col = Model, fill = Model), position = position_dodge(width = dw))
+    if (error_bars==TRUE) {
+      p<-p + geom_pointrange(aes(year, obs, ymax = ub, ymin = lb, color = Model, fill = Model), shape = 1, linetype = "solid", position = position_dodge(width = dw))
+    }
   }
 
   if (!.OVERLAY) p <- p + guides(colour = FALSE)

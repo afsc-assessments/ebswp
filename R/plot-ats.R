@@ -66,7 +66,7 @@
 #'            geom_pointrange guides
 #'
 plot_ats <- function(M, xlab = "Year", ylab = "Acoustic trawl survey biomass",
-                     xlim = NULL, ylim = NULL, alpha = 0.1, biomass = TRUE, color = "red") {
+                     xlim = NULL, ylim = NULL, alpha = 0.1, biomass = TRUE, color = "red",error_bars = TRUE) {
     xlab <- paste0("\n", xlab)
     ylab <- paste0(ylab, "\n")
 
@@ -84,12 +84,16 @@ plot_ats <- function(M, xlab = "Year", ylab = "Acoustic trawl survey biomass",
     }
     if (length(M) == 1)
     {
-        p <- p + geom_line(aes(x = year, y = pre)) +geom_point(aes(x=year, y=obs),size=2,color=color) +
-            geom_errorbar(aes(x = year, ymax = ub, ymin = lb),width=.5)
+        p <- p + geom_line(aes(x = year, y = pre)) +geom_point(aes(x=year, y=obs),size=2,color=color)
+        if (error_bars == TRUE) {
+         p<-p + geom_errorbar(aes(x = year, ymax = ub, ymin = lb),width=.5)
+        }
     } else {
         dw <- 0.5
-        p <- p + geom_line(aes(x = year, y = pre, col = Model), width=1, position=position_dodge(width=dw)) + geom_point(aes(x=year, y=obs,col=Model,fill=Model),position = position_dodge(width=dw)) +
-           geom_pointrange(aes(year, obs, ymax = ub, ymin = lb, color = Model,fill=Model), shape = 1, linetype = "solid", position = position_dodge(width = dw))
+        p <- p + geom_line(aes(x = year, y = pre, col = Model), width=1, position=position_dodge(width=dw)) + geom_point(aes(x=year, y=obs,col=Model,fill=Model),position = position_dodge(width=dw))
+        if (error_bars == TRUE) {
+          p<- p + geom_pointrange(aes(year, obs, ymax = ub, ymin = lb, color = Model,fill=Model), shape = 1, linetype = "solid", position = position_dodge(width = dw))
+        }
             #geom_errorbar(aes(x = year, ymax = ub, ymin = lb),width=0.5,position=position_dodge(width=0.9))
     }
 
